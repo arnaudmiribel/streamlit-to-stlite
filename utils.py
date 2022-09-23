@@ -1,10 +1,12 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from textwrap import dedent
+from typing import Union
 
 import streamlit as st
 
-cd = Path(__file__).parent.absolute()
+cd = Path()
 
 
 def escape_tick(string: str) -> str:
@@ -22,16 +24,18 @@ def format_files(files: dict) -> str:
 
 
 def add_stlite_in_footer():
-    st.write(
-        r"""
-    <style>
-    footer:after {
-        content:" · Exported by stlite_exporter using stlite";
-    }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
+    return dedent('''
+        st.write(
+            r"""
+        <style>
+        footer:after {
+            content:" · Exported by stlite_exporter using stlite";
+        }
+        </style>
+        """,
+            unsafe_allow_html=True,
+        )
+    ''')
 
 
 # def export_to_stlite(
@@ -41,27 +45,25 @@ def add_stlite_in_footer():
 # ):
 
 
-@dataclass
-class File:
-    name: str
-    code: str
-
-
-def export_to_stlite(files: list[File], requirements: list[str] = None) -> str:
-    # requirements_path = (cd / requirements_filename).resolve()
-    # requirements = requirements_path.read_text()
+# def export_to_stlite(files: list[File], requirements: list[str] = None) -> str:
+def export_to_stlite(
+    main_file: Union[str, Path],
+    files: list[Union[str, Path]],
+    requirements: list[str] = None,
+) -> str:
 
     if requirements is None:
         requirements = []
 
-    files_dict = {f.name: escape_tick(f.code) for f in files}
+    files_dict = {str(f): Path(f).read_text() for f in files}
 
-    # Make the footer sexy
-    add_stlite_in_footer()
+    for file in files_dict:
+        if file.endswith(".py"):
+            files_dict[file] =  files_dict[file] + add_stlite_in_footer()
 
     data = {
         "requirements": "\n".join(requirements),
-        "entrypoint": files[0].name,
+        "entrypoint": str(main_file),
         "files": files_dict,
     }
     html = Path("stlite_template.html").read_text()
