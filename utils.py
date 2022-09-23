@@ -4,9 +4,11 @@ from typing import Union
 import streamlit as st
 from jinja2 import Environment, FileSystemLoader
 
+cd = Path(__file__).parent.absolute()
+
 
 def escape_tick(string: str) -> str:
-    return string.replace("`", "\`")
+    return string.replace("`", "\\`")
 
 
 def format_files(files: dict) -> str:
@@ -37,8 +39,6 @@ def export_to_stlite(
     files: Union[str, list] = "**/*.py",
     requirements_filename: str = "requirements.txt",
 ):
-
-    cd = Path(__file__).parent.absolute()
 
     requirements_path = (cd / requirements_filename).resolve()
     requirements = requirements_path.read_text()
