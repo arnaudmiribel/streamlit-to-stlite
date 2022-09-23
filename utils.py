@@ -1,26 +1,7 @@
 import json
-from dataclasses import dataclass
 from pathlib import Path
 from textwrap import dedent
 from typing import Union
-
-import streamlit as st
-
-cd = Path()
-
-
-def escape_tick(string: str) -> str:
-    return string.replace("`", "`")
-
-
-def format_files(files: dict) -> str:
-    return "\n,".join(
-        f"""
-"{key}": `
-{escape_tick(value)}
-`"""
-        for (key, value) in files.items()
-    )
 
 
 def add_stlite_in_footer():
@@ -37,15 +18,6 @@ def add_stlite_in_footer():
         )
     ''')
 
-
-# def export_to_stlite(
-#    entrypoint: str = "streamlit_app.py",
-#    files: Union[str, list] = "**/*.py",
-#    requirements_filename: str = "requirements.txt",
-# ):
-
-
-# def export_to_stlite(files: list[File], requirements: list[str] = None) -> str:
 def export_to_stlite(
     main_file: Union[str, Path],
     files: list[Union[str, Path]],
