@@ -13,6 +13,6 @@ if export:
             cd / "streamlit_app.py",
             cd / "pages/01_😎_Page_1.py",
             cd / "pages/02_🚀_Page_2.py",
-            # cd / "utils.py",
+            cd / "utils.py",
         ]
     )
