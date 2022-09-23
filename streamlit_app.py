@@ -8,6 +8,29 @@ x = st.slider("Hey", 0, 100)
 
 st.write(f"Try out this {x}")
 
+from streamlit.components.v1 import html
+
+# Lol. Imagine this would work and throw the download. Kidding. But just imagine
+# html(
+#     """
+# <script>
+
+# window.addEventListener('load', function() {
+#     let newButton = '<button id="export" class="css-9s5bis"><img src="https://img.icons8.com/fluency-systems-regular/344/export.png" width="20" height="20"></button>';
+#     let mainMenu = window.parent.document.getElementById('MainMenu');
+#     console.log(mainMenu);
+#     let currentMenu = mainMenu.innerHTML;
+#     console.log(currentMenu);
+#     mainMenu.innerHTML = newButton + currentMenu;
+
+#     window.parent.document.getElementById('export').addEventListener("click", () => alert('yo'), );
+# });
+
+
+# </script>
+# """
+# )
+
 html_file = st.text_input("html file", "test.html")
 export = st.button("Export to stlite")
 if export:

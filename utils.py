@@ -5,7 +5,9 @@ from typing import Union
 
 
 def add_stlite_in_footer():
-    return dedent('''
+    return dedent(
+        '''
+        import streamlit as st
         st.write(
             r"""
         <style>
@@ -16,7 +18,9 @@ def add_stlite_in_footer():
         """,
             unsafe_allow_html=True,
         )
-    ''')
+    '''
+    )
+
 
 def export_to_stlite(
     main_file: Union[str, Path],
@@ -31,7 +35,7 @@ def export_to_stlite(
 
     for file in files_dict:
         if file.endswith(".py"):
-            files_dict[file] =  files_dict[file] + add_stlite_in_footer()
+            files_dict[file] = files_dict[file] + add_stlite_in_footer()
 
     data = {
         "requirements": "\n".join(requirements),
