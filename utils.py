@@ -23,7 +23,7 @@ def add_stlite_in_footer():
 
 
 def export_to_stlite(
-    main_file: Union[str, Path],
+    main_file: Path,
     files: list[Path],
     requirements: list[str] = None,
 ) -> str:
@@ -39,7 +39,7 @@ def export_to_stlite(
 
     data = {
         "requirements": "\n".join(requirements),
-        "entrypoint": str(main_file),
+        "entrypoint": main_file.name,
         "files": files_dict,
     }
     html = Path("stlite_template.html").read_text()
