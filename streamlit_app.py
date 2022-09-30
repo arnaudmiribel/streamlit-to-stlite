@@ -1,36 +1,45 @@
 from pathlib import Path
 
 import streamlit as st
-from streamlit_js_eval import streamlit_js_eval
 
-from utils import export_to_stlite
+from utils import export_to_stlite, get_app_url
 
-url = streamlit_js_eval(
-    js_expressions="window.location.origin", want_output=True, key="LOC"
-)
+st.title("Random app")
 
-st.write(f"Return value was: {url}")
+st.write("Hey")
+
+app_url = get_app_url()
+
+if "localhost" in app_url:
+    path_prefix = Path("")
+elif "streamlitapp" in app_url:
+    path_prefix = Path("/app/")
 
 
-html_file = st.text_input("html file", "test.html")
+html_file = st.text_input("html file", path_prefix / "test.html")
 export = st.button("Export to stlite")
 if export:
     data = dict(
-        main_file="streamlit_app.py",
+        main_file=path_prefix / Path("streamlit_app.py"),
         files=[
-            "streamlit_app.py",
-            "pages/01_😎_Page_1.py",
-            "pages/02_🚀_Page_2.py",
-            "utils.py",
+            path_prefix / Path("streamlit_app.py"),
+            path_prefix / Path("pages/01_😎_Page_1.py"),
+            path_prefix / Path("pages/02_🚀_Page_2.py"),
+            path_prefix / Path("utils.py"),
         ],
-        requirements=Path("requirements.txt").read_text().splitlines(),
+        requirements=(path_prefix / Path("requirements.txt")).read_text().splitlines(),
     )
 
     st.write("Exporting with the following data:", data)
 
     html = export_to_stlite(**data)
-    st.write("Here's the HTML:")
-    st.code(html, language="html")
-
-    Path(html_file).write_text(html)
-    st.write(f"Saved to {html_file}")
+    # st.write("Here's the HTML:")
+    st.download_button(
+        label="Download streamlit_app.html",
+        data=html,
+        file_name="streamlit_app.html",
+        # mime='text/html',
+    )
+    # Path(html_file).write_text("streamlit_app.html")
+    # st.write(f"Saved to {html_file}")
+    st.expander("Lookup streamlit_app.html").code(html, language="html")
