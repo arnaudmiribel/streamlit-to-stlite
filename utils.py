@@ -3,14 +3,6 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Union
 
-from streamlit_js_eval import streamlit_js_eval
-
-
-def get_app_url():
-    return streamlit_js_eval(
-        js_expressions="window.location.origin", want_output=True, key="LOC"
-    )
-
 
 def add_stlite_in_footer():
     return dedent(
