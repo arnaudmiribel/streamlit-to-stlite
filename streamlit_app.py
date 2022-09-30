@@ -15,8 +15,9 @@ if "localhost" in app_url:
 elif "streamlitapp" in app_url:
     path_prefix = Path("/app/")
 
+path_prefix = Path(__file__).parent.absolute()
 
-html_file = st.text_input("html file", path_prefix / "test.html")
+# html_file = st.text_input("html file", path_prefix / "test.html")
 export = st.button("Export to stlite")
 if export:
     data = dict(
@@ -30,7 +31,7 @@ if export:
         requirements=(path_prefix / Path("requirements.txt")).read_text().splitlines(),
     )
 
-    st.write("Exporting with the following data:", data)
+    # st.write("Exporting with the following data:", data)
 
     html = export_to_stlite(**data)
     # st.write("Here's the HTML:")
