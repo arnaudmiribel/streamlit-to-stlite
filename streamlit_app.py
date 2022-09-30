@@ -1,12 +1,16 @@
 from pathlib import Path
 
 import streamlit as st
+from streamlit_js_eval import streamlit_js_eval
 
 from utils import export_to_stlite
 
-x = st.slider("Hey", 0, 100)
+url = streamlit_js_eval(
+    js_expressions="window.location.origin", want_output=True, key="LOC"
+)
 
-st.write(f"Try out this {x}")
+st.write(f"Return value was: {url}")
+
 
 html_file = st.text_input("html file", "test.html")
 export = st.button("Export to stlite")
