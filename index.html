@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>stlite app</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.6.0/build/stlite.css"
+    />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.6.0/build/stlite.js"></script>
+    <script>
+        stlite.mount({"requirements": "streamlit", "entrypoint": "streamlit_app.py", "files": {"streamlit_app.py": "import streamlit as st\n\nst.title(\"Random app\")\n\nst.write(\"Hey\")\nimport streamlit as st\nst.write(\n    r\"\"\"\n<style>\nfooter:after {\n    content:\" \u00b7 Exported by stlite_exporter using stlite\";\n}\n</style>\n\"\"\",\n    unsafe_allow_html=True,\n)\n", "utils.py": "import json\nfrom pathlib import Path\nfrom textwrap import dedent\nfrom typing import Union\n\n\ndef add_stlite_in_footer():\n    return dedent(\n        '''\n        import streamlit as st\n        st.write(\n            r\"\"\"\n        <style>\n        footer:after {\n            content:\" \u00b7 Exported by stlite_exporter using stlite\";\n        }\n        </style>\n        \"\"\",\n            unsafe_allow_html=True,\n        )\n    '''\n    )\n\n\ndef export_to_stlite(\n    main_file: Path,\n    files: list[Path],\n    requirements: list[str] = None,\n) -> str:\n\n    if requirements is None:\n        requirements = []\n\n    files_dict = {f.name: f.read_text() for f in files}\n\n    for file in files_dict:\n        if file.endswith(\".py\"):\n            files_dict[file] = files_dict[file] + add_stlite_in_footer()\n\n    data = {\n        \"requirements\": \"\\n\".join(requirements),\n        \"entrypoint\": main_file.name,\n        \"files\": files_dict,\n    }\n    html = Path(\"stlite_template.html\").read_text()\n    return html.format(data=json.dumps(data))\n\nimport streamlit as st\nst.write(\n    r\"\"\"\n<style>\nfooter:after {\n    content:\" \u00b7 Exported by stlite_exporter using stlite\";\n}\n</style>\n\"\"\",\n    unsafe_allow_html=True,\n)\n", "generate_html.py": "\"\"\"\nCLI for creating stlite html file from streamlit app\n\"\"\"\n\nfrom pathlib import Path\nfrom typing import Optional\n\nimport typer\n\nfrom utils import export_to_stlite\n\ncd = Path(__file__).parent.absolute()\n\n\ndef main(\n    main_file: str = \"streamlit_app.py\",\n    requirements: str = \"requirements.txt\",\n    other_files: list[str] = typer.Argument(None),\n    output: str = \"build/index.html\",\n):\n    all_files = [cd / main_file]\n    if not other_files:\n        other_files = [\"*.py\", \"pages/*.py\"]\n\n    if other_files is not None:\n        for f in other_files:\n            if \"*\" in f:\n                all_files.extend(cd.glob(f))\n            else:\n                all_files += [cd / file for file in other_files]\n\n    html = export_to_stlite(\n        main_file=cd / main_file,\n        files=all_files,\n        requirements=(cd / requirements).read_text().splitlines(),\n    )\n    Path(output).parent.mkdir(parents=True, exist_ok=True)\n    Path(output).write_text(html)\n\n\nif __name__ == \"__main__\":\n    typer.run(main)\n\nimport streamlit as st\nst.write(\n    r\"\"\"\n<style>\nfooter:after {\n    content:\" \u00b7 Exported by stlite_exporter using stlite\";\n}\n</style>\n\"\"\",\n    unsafe_allow_html=True,\n)\n", "02_\ud83d\ude80_Page_2.py": "import streamlit as st\n\nst.title(\"\ud83d\ude80\")\n\nimport streamlit as st\nst.write(\n    r\"\"\"\n<style>\nfooter:after {\n    content:\" \u00b7 Exported by stlite_exporter using stlite\";\n}\n</style>\n\"\"\",\n    unsafe_allow_html=True,\n)\n", "01_\ud83d\ude0e_Page_1.py": "import streamlit as st\n\nst.title(\"\ud83d\ude0e\")\n\nimport streamlit as st\nst.write(\n    r\"\"\"\n<style>\nfooter:after {\n    content:\" \u00b7 Exported by stlite_exporter using stlite\";\n}\n</style>\n\"\"\",\n    unsafe_allow_html=True,\n)\n"}}, document.getElementById("root"));
+    </script>
+  </body>
+</html>
